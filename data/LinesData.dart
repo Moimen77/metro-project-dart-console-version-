@@ -1,5 +1,8 @@
 import '../Classes/line.dart';
 import '../Classes/station.dart';
+import '../Classes/stationLocation.dart';
+
+Map<String, List<StationLocation>> stationsIndex = {};
 
 line line1 = line(
     lineId: 1,
