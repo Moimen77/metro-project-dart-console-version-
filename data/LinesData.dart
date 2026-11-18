@@ -2,6 +2,7 @@ import '../Classes/line.dart';
 import '../Classes/station.dart';
 
 line line1 = line(
+    lineId: 1,
     directions: ['Helwan , New marg'],
     name: 'Line 1',
     stations: [
@@ -20,6 +21,7 @@ line line1 = line(
     ]);
 
 line line2 = line(
+    lineId: 2,
     directions: ['Shubra El Kheima', 'El Moneeb'],
     name: 'Line 2',
     stations: [
@@ -27,9 +29,11 @@ line line2 = line(
       Station(name: 'Om El Masryeen'),
       Station(name: 'Giza'),
       Station(name: 'Opera'),
-      interchangeStation(name: 'El Sadat', connectinglines: [line1, line2]),
+      interchangeStation(name: 'El Sadat', connectinglines: [1, 2]),
     ]);
+
 line line3 = line(
+    lineId: 3,
     directions: ['Adly Mansour', 'Rod El Farag Corr.'],
     name: 'Line 3',
     stations: [
