@@ -1,4 +1,5 @@
 import '../Classes/line.dart';
+import '../Classes/station.dart';
 import '../Classes/stationLocation.dart';
 import '../data/LinesData.dart';
 
@@ -36,6 +37,41 @@ String getRouteFromOneLine(String station1, String station2) {
   }
 
   return 'No route found.';
+}
+
+void getRouteWithInterchange(String station1, String station2) {
+  final stationLocations1 = stationsIndex[station1]!.first;
+  final stationLocations2 = stationsIndex[station2]!.first;
+
+  final lineStation1 = stationLocations1.lineId;
+  final lineStation2 = stationLocations2.lineId;
+
+  final lineStationIndex1 = stationLocations1.stationIndex;
+
+  for (var metroLine in line.lisnes) {
+    if (metroLine.lineId == lineStation1) {
+      for (var i = lineStationIndex1; i < metroLine.stations.length; i++) {
+        final station = metroLine.stations[i];
+        if (station is interchangeStation) {
+          final connectingLines = station.connectinglines;
+          if (connectingLines.contains(lineStation2)) {
+            final routeToInterchange =
+                getRouteFromOneLine(station1, station.name);
+            final routeFromInterchange =
+                getRouteFromOneLine(station.name, station2);
+
+            print(
+                'Route from $station1 to ${station.name}: $routeToInterchange');
+            print(
+                'Route from ${station.name} to $station2: $routeFromInterchange');
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  print('No route found with interchange.');
 }
 
 void buildStationsIndex() {
