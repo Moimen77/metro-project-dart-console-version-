@@ -11,14 +11,30 @@ bool isInSameLine(String station1, String station2) {
 }
 
 String getRouteFromOneLine(String station1, String station2) {
-  final stationLocations1 = stationsIndex[station1]!.first;
-  final stationLocations2 = stationsIndex[station2]!.first;
+  final stationLocations1 = stationsIndex[station1]!;
+  final stationLocations2 = stationsIndex[station2]!;
+
+  final commonLocation = stationLocations1.where((loc1) {
+    return stationLocations2.any(
+      (loc2) => loc1.lineId == loc2.lineId,
+    );
+  }).firstOrNull;
+
+  if (commonLocation == null) {
+    return 'No common line found.';
+  }
+
+  final firstLocation = commonLocation;
+
+  final secondLocation = stationLocations2.firstWhere(
+    (loc) => loc.lineId == firstLocation.lineId,
+  );
 
   for (var metroLine in line.lisnes) {
-    if (metroLine.lineId == stationLocations1.lineId &&
-        metroLine.lineId == stationLocations2.lineId) {
-      final firstIndex = stationLocations1.stationIndex;
-      final lastIndex = stationLocations2.stationIndex;
+    if (metroLine.lineId == firstLocation.lineId &&
+        metroLine.lineId == secondLocation.lineId) {
+      final firstIndex = firstLocation.stationIndex;
+      final lastIndex = secondLocation.stationIndex;
 
       final startIndex = firstIndex < lastIndex ? firstIndex : lastIndex;
       final endIndex = firstIndex > lastIndex ? firstIndex : lastIndex;
