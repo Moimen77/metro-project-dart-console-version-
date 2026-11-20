@@ -55,39 +55,67 @@ String getRouteFromOneLine(String station1, String station2) {
   return 'No route found.';
 }
 
-void getRouteWithInterchange(String station1, String station2) {
-  final stationLocations1 = stationsIndex[station1]!.first;
-  final stationLocations2 = stationsIndex[station2]!.first;
+List<String>? getRouteWithInterchange2(String station1, String station2) {
+  final stationLocations1 = stationsIndex[station1]!;
+  final stationLocations2 = stationsIndex[station2]!;
 
-  final lineStation1 = stationLocations1.lineId;
-  final lineStation2 = stationLocations2.lineId;
+  List<String>? bestRoute;
+  String? bestInterchange;
+  int minStations = 999999;
 
-  final lineStationIndex1 = stationLocations1.stationIndex;
+  for (final location1 in stationLocations1) {
+    for (final location2 in stationLocations2) {
+      if (location1.lineId == location2.lineId) continue;
 
-  for (var metroLine in line.lisnes) {
-    if (metroLine.lineId == lineStation1) {
-      for (var i = lineStationIndex1; i < metroLine.stations.length; i++) {
-        final station = metroLine.stations[i];
-        if (station is interchangeStation) {
-          final connectingLines = station.connectinglines;
-          if (connectingLines.contains(lineStation2)) {
-            final routeToInterchange =
-                getRouteFromOneLine(station1, station.name);
-            final routeFromInterchange =
-                getRouteFromOneLine(station.name, station2);
+      final startLine = line.lisnes.firstWhere(
+        (l) => l.lineId == location1.lineId,
+      );
 
-            print(
-                'Route from $station1 to ${station.name}: $routeToInterchange');
-            print(
-                'Route from ${station.name} to $station2: $routeFromInterchange');
-            return;
+      for (int i = 0; i < startLine.stations.length; i++) {
+        final station = startLine.stations[i];
+
+        if (station is interchangeStation &&
+            station.connectinglines.contains(location2.lineId)) {
+          final route1 = getRouteFromOneLine(
+            station1,
+            station.name,
+          );
+
+          final route2 = getRouteFromOneLine(
+            station.name,
+            station2,
+          );
+
+          if (route1 == 'No route found.' || route2 == 'No route found.') {
+            continue;
+          }
+
+          final route = [
+            ...route1.split(' -> '),
+            ...route2.split(' -> ').skip(1),
+          ];
+
+          final stationCount = route.length;
+
+          if (stationCount < minStations) {
+            minStations = stationCount;
+            bestRoute = route;
+            bestInterchange = station.name;
           }
         }
       }
     }
   }
 
-  print('No route found with interchange.');
+  if (bestRoute == null) {
+    print('No route found with interchange.');
+    return null;
+  }
+
+  print('Best Interchange: $bestInterchange');
+  print('Best Route: ${bestRoute.join(' -> ')}');
+  print('Total Stations: ${bestRoute.length}');
+  return bestRoute;
 }
 
 void buildStationsIndex() {
