@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../Classes/line.dart';
 import '../Classes/station.dart';
 import '../Classes/stationLocation.dart';
@@ -133,4 +135,81 @@ void buildStationsIndex() {
       );
     }
   }
+}
+
+double TripMoney(int StationsCount) {
+  switch (StationsCount) {
+    case <= 9:
+      return 10;
+    case <= 16:
+      return 12;
+    case <= 23:
+      return 15;
+    case <= 39:
+      return 20;
+    default:
+      return 0;
+  }
+}
+
+double TripTime(int StationsCount) {
+  return StationsCount * 2.5;
+}
+
+void printMenu() {
+  int choice;
+  print('Welcome to the Metro Route Finder!');
+  print('1. Find route between two stations');
+  print('2. Exit');
+  choice = int.parse(stdin.readLineSync()!);
+  switch (choice) {
+    case 1:
+      findRouteBetweenStations();
+      break;
+    case 2:
+      print('Exiting the program. Goodbye!');
+      exit(0);
+    default:
+      print('Invalid choice. Please try again.');
+  }
+}
+
+void findRouteBetweenStations() {
+  print('Enter the starting station:');
+  String startStation = stdin.readLineSync()!.trim();
+  print('Enter the destination station:');
+  String endStation = stdin.readLineSync()!.trim();
+
+  if (!stationsIndex.containsKey(startStation)) {
+    print('Starting station not found.');
+    return;
+  }
+
+  if (!stationsIndex.containsKey(endStation)) {
+    print('Destination station not found.');
+    return;
+  }
+
+  if (isInSameLine(startStation, endStation)) {
+    String route = getRouteFromOneLine(startStation, endStation);
+    print('Route: $route');
+    print(
+        'Trip Time: ${TripTime(route.split(' -> ').length).toStringAsFixed(2)} minutes');
+    print('Trip Price: ${TripMoney(route.split(' -> ').length)} EGP');
+  } else {
+    List<String>? route = getRouteWithInterchange2(startStation, endStation);
+    if (route != null) {
+      print('Trip Time: ${TripTime(route.length).toStringAsFixed(2)} minutes');
+      print('Trip Price: ${TripMoney(route.length)} EGP');
+    }
+  }
+}
+
+void powerApp() {
+  String choice = '';
+  do {
+    printMenu();
+    print('Enter your choice (Y or N):');
+    choice = stdin.readLineSync()!.trim();
+  } while (choice.toUpperCase() == 'Y');
 }
