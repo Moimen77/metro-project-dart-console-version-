@@ -60,7 +60,7 @@ line line2 = line(
       interchangeStation(name: 'El Sadat', connectinglines: [1, 2]),
       Station(name: 'Nageeb'),
       interchangeStation(name: 'Attaba', connectinglines: [2, 3]),
-      interchangeStation(name: 'Al-Shohadaa', connectinglines: [1, 2]),
+      interchangeStation(name: 'Al Shohadaa', connectinglines: [1, 2]),
       Station(name: 'Masarra'),
       Station(name: 'Rod El Farag'),
       Station(name: 'Saint Theresa'),
